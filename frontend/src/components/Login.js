@@ -1,4 +1,3 @@
-// src/components/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -12,10 +11,14 @@ function Login() {
                 username,
                 password
             });
-            localStorage.setItem('token', response.data.token);
-            alert('Login successful');
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                alert('Login successful');
+            } else {
+                alert('Login failed: No token received');
+            }
         } catch (error) {
-            alert('Login failed');
+            alert(`Login failed: ${error.response?.data?.message || error.message}`);
         }
     };
 

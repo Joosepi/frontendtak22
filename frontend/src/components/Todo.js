@@ -1,4 +1,3 @@
-// src/components/Todo.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -15,7 +14,7 @@ function Todo() {
             });
             setTodos(response.data);
         } catch (error) {
-            alert('Failed to fetch TODOs');
+            alert(`Failed to fetch TODOs: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -32,7 +31,7 @@ function Todo() {
             setTitle('');
             setDescription('');
         } catch (error) {
-            alert('Failed to add TODO');
+            alert(`Failed to add TODO: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -44,7 +43,7 @@ function Todo() {
             });
             setTodos(todos.filter(todo => todo.id !== id));
         } catch (error) {
-            alert('Failed to delete TODO');
+            alert(`Failed to delete TODO: ${error.response?.data?.message || error.message}`);
         }
     };
 

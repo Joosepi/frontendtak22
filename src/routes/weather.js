@@ -1,16 +1,41 @@
-const express = require('express');
-const axios = require('axios');
-const auth = require('../middlewares/auth');
-const router = express.Router();
+import React, { useState } from 'react';
+import axios from 'axios';
 
-router.get('/:city', auth, async (req, res) => {
-    const { city } = req.params;
-    try {
-        const response = await axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OPENWEATHER_API_KEY}`);
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching weather data' });
-    }
-});
+function Weather() {
+    const [city, setCity] = useState('');
+    const [weather, setWeather] = useState(null);
 
-module.exports = router;
+    const fetchWeather = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.get(`http://localhost:5000/weather/${city}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setWeather(response.data);
+        } catch (error) {
+            alert(`Failed to fetch weather data: ${error.response?.data?.message || error.message}`);
+        }
+    };
+
+    return (
+        <div>
+            <h2>Weather</h2>
+            <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="City"
+            />
+            <button onClick={fetchWeather}>Get Weather</button>
+            {weather && (
+                <div>
+                    <h3>{weather.name}</h3>
+                    <p>{weather.weather[0].description}</p>
+                    <p>Temperature: {weather.main.temp}°C</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default Weather;
